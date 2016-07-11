@@ -16,7 +16,7 @@ ShootPlayer::ShootPlayer(Player& from) : Shoot(Configuration::Textures::ShootPla
     float angle = from._sprite.getRotation() / 180 * M_PI;
     _impulse = sf::Vector2f(std::cos(angle),std::sin(angle)) * 500.f;
     setPosition(from.getPosition());
-    _sprite.setRotation(from._sprite.getRotation());
+    _sprite.setRotation(from._sprite.getRotation() + 90);
     _world.add(Configuration::Sounds::LaserPlayer);
 }
 
