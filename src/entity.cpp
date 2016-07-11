@@ -6,6 +6,8 @@ Entity::Entity(Configuration::Textures tex_id, World& world) : _world(world), _a
     _sprite.setOrigin(texture.getSize().x/2.f, texture.getSize().y/2.f);
 }
 
+Entity::~Entity() {}
+
 bool Entity::isAlive() const {
     return _alive;
 }

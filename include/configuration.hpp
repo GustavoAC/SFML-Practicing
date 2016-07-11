@@ -16,6 +16,7 @@ class Configuration {
     Configuration& operator=(const Configuration&) = delete;
 
     static Player* player;
+
     static int getScore();
     static void addScore(int s);
 
