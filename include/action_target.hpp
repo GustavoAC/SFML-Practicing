@@ -1,10 +1,10 @@
 #ifndef _ACTION_TARGET_HPP_
 #define _ACTION_TARGET_HPP_
 
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
+#include <functional>
+#include <utility>
 #include <list>
-#include "configuration.hpp"
+#include "action_map.hpp"
 
 template<class T = int>
 class ActionTarget {

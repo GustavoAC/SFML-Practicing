@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "game.hpp"
+#include "configuration.hpp"
 
 using namespace std;
 

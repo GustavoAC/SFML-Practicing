@@ -4,7 +4,7 @@
 //#include <SFML/System.hpp>
 //#include <SFML/Window.hpp>
 #include <unordered_map>
-#include "configuration.hpp"
+#include "action.hpp"
 
 template<typename T = int>
 class ActionMap {

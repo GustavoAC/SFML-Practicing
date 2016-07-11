@@ -1,8 +1,6 @@
 #ifndef _RESOURCE_MANAGER_HPP_
 #define _RESOURCE_MANAGER_HPP_
 
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <unordered_map>

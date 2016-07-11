@@ -6,17 +6,17 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
-#include "configuration.hpp"
+#include "world.hpp"
 #include "player.hpp"
 
 class Game {
   public:
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
-    Game();
+    Game(int x=800, int y=600);
     void run(int minimum_frame_per_seconds);
 
   private:
@@ -24,7 +24,7 @@ class Game {
     void update(sf::Time deltaTime);
     void render();
     sf::RenderWindow _window;
-    Player _player;
+    World _world;
 };
 
 #endif

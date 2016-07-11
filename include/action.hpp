@@ -4,7 +4,8 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <cstring>
-#include "classes.hpp"
+
+template <class T> class ActionTarget;
 
 class Action {
   public:

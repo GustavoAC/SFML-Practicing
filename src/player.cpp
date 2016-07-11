@@ -1,10 +1,11 @@
 #include "player.hpp"
+#include "random.hpp"
+#include "shoot.hpp"
 
-Player::Player() : ActionTarget(Configuration::player_inputs),
-                  _isMoving(false),
-                  _rotation(0) {
-    _ship.setTexture(Configuration::textures.get(Configuration::Textures::Player));
-    _ship.setOrigin(32,32);
+Player::Player(World& world) : Entity(Configuration::Textures::PlayerTex, world),
+                               ActionTarget(Configuration::player_inputs),
+                               _isMoving(false),
+                               _rotation(0) {
     this->setPosition(300, 300);
 
     bind(Configuration::PlayerInputs::Up, [this](const sf::Event&){
@@ -22,6 +23,14 @@ Player::Player() : ActionTarget(Configuration::player_inputs),
     bind(Configuration::PlayerInputs::Down, [this](const sf::Event&){
         this->setPosition(300, 300);
     });
+
+    bind(Configuration::PlayerInputs::Shoot,[this](const sf::Event&){
+        shoot();
+    });
+
+    bind(Configuration::PlayerInputs::Hyperspace,[this](const sf::Event&){
+        goToHyperspace();
+    });
 }
 
 void Player::processEvents(){
@@ -32,21 +41,51 @@ void Player::processEvents(){
 
 void Player::update(sf::Time deltaTime) {
     float seconds = deltaTime.asSeconds();
+    _timeSinceLastShoot += deltaTime;
 
     if (_rotation != 0) {
-        float angle = _rotation*300*seconds; //300 is the rotation speed
-        _ship.rotate(angle);
+        float angle = _rotation*250*seconds; //300 is the rotation speed
+        _sprite.rotate(angle);
     }
 
     if (_isMoving) {
-        float angle = _ship.getRotation() / 180 * M_PI;
-        _velocity += sf::Vector2f(std::cos(angle),std::sin(angle)) *
-        100.f * seconds; //100 is the acceleration
+        float angle = _sprite.getRotation() / 180 * M_PI /*- M_PI / 2*/;
+        _impulse += sf::Vector2f(std::cos(angle),std::sin(angle)) * 300.f
+        * seconds; //300 is the acceleration
     }
 
-    _ship.move(seconds * _velocity);
+    _sprite.move(seconds * _impulse);
 }
 
-void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(_ship, states);
+/*
+Double dispatching makes this faster (although it's harder to implement)
+Double dispatching is a way to "discover" exactly what type is going into the
+function in a OOP environment. Basically one object calls a function to another
+so in the end both of them are defined real classes.
+*/
+bool Player::isCollide(const Entity& other)const {
+    if (dynamic_cast<const ShootPlayer*>(&other) == nullptr) {
+        return Collision::circleTest(_sprite,other._sprite);
+    }
+    return false;
+}
+
+void Player::shoot() {
+    // Comment this later to have some fun.
+    if (_timeSinceLastShoot > sf::seconds(0.3)) {
+        _world.add(new ShootPlayer(*this));
+        _timeSinceLastShoot = sf::Time::Zero;
+    }
+}
+
+void Player::goToHyperspace() {
+    _impulse = sf::Vector2f(0,0);
+    setPosition(random(0,_world.getX()),random(0,_world.getY()));
+    _world.add(Configuration::Sounds::Jump);
+}
+
+void Player::onDestroy() {
+    Entity::onDestroy();
+    //Configuration::lives--;
+    _world.add(Configuration::Sounds::Boom);
 }
