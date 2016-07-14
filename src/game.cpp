@@ -9,10 +9,13 @@
 #include "player.hpp"
 #include "meteor.hpp"
 #include "random.hpp"
+#include "saucer.hpp"
 
-Game::Game(int x, int y) : _window(sf::VideoMode(x, y),"03_Asteroids"), _world(x,y) {
+Game::Game(int x, int y) : _window(sf::VideoMode(x, y),"03_Asteroids"),
+                           _world(x,y),
+                           _nextSaucer(sf::seconds(random(10.f, 30.f))) {
     _window.setFramerateLimit(60);
-    for(int i = 0; i < 3;++i) {
+    for(int i = 0; i < 4; ++i) {
         Meteor* meteor = new BigMeteor(_world);
         meteor->setPosition(random(0.f,(float)_world.getX()),random(0.f,(float)_world.getY()));
         _world.add(meteor);
@@ -30,7 +33,7 @@ void Game::run(int minimum_frame_per_seconds) {
     while (_window.isOpen()) {
         processEvents();
         timeSinceLastUpdate = clock.restart();
-        std::cout << "FPS: " << 1.f/timeSinceLastUpdate.asSeconds() << "\n";
+        //std::cout << "FPS: " << 1.f/timeSinceLastUpdate.asSeconds() << "\n";
 
         while (timeSinceLastUpdate > TimePerFrame) {
             timeSinceLastUpdate -= TimePerFrame;
@@ -43,6 +46,9 @@ void Game::run(int minimum_frame_per_seconds) {
 }
 
 void Game::processEvents() {
+    if(Configuration::isGameOver())
+        _window.close();
+
     sf::Event event;
     while(_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) //Close window
@@ -50,19 +56,53 @@ void Game::processEvents() {
         else if (event.type == sf::Event::KeyPressed) { //keyboard input
             if (event.key.code == sf::Keyboard::Escape)
                 _window.close();
-        }else {
-            Configuration::player->processEvent(event);
+        } else {
+            if (Configuration::player != nullptr)
+                Configuration::player->processEvent(event);
         }
     }
-    Configuration::player->processEvents();
+
+    if (Configuration::player != nullptr)
+        Configuration::player->processEvents();
 }
 
 void Game::update(sf::Time deltaTime) {
     _world.update(deltaTime);
+
+    if (Configuration::player == nullptr){
+        Configuration::player = new Player(_world);
+        Configuration::player->setPosition(_world.getX()/2,_world.getY()/2);
+        _world.add(Configuration::player);
+    }
+
+    _nextSaucer -= deltaTime;
+
+    if (_nextSaucer < sf::Time::Zero) {
+        Saucer::newSaucer(_world);
+        _nextSaucer = sf::seconds(random(10.f,30.f));
+    }
+
+    if (_world.size() <= 1) {
+        initLevel();
+    }
+}
+
+void Game::initLevel() {
+    Configuration::player->goToHyperspace();
+    Configuration::player->setPosition(_world.getX()/2, _world.getY()/2);
+
+    for (int i = 0; i < 4; ++i) {
+        Meteor* meteor = new BigMeteor(_world);
+        do{
+            meteor->setPosition(random(0.f,(float)_world.getX()),random(0.f,(float)_world.getY()));
+        }while(_world.isCollide(*meteor));
+        _world.add(meteor);
+    }
 }
 
 void Game::render() {
     _window.clear();
     _window.draw(_world);
+    Configuration::draw(_window);
     _window.display();
 }

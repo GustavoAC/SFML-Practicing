@@ -86,6 +86,7 @@ void Player::goToHyperspace() {
 
 void Player::onDestroy() {
     Entity::onDestroy();
-    //Configuration::lives--;
+    Configuration::player = nullptr;
+    Configuration::_lives--;
     _world.add(Configuration::Sounds::Boom);
 }

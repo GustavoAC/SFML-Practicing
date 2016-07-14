@@ -12,7 +12,7 @@ void Shoot::update(sf::Time deltaTime) {
 // ShootPlayer //
 
 ShootPlayer::ShootPlayer(Player& from) : Shoot(Configuration::Textures::ShootPlayer, from._world) {
-    _duration = sf::seconds(5);
+    _duration = sf::seconds(3);
     float angle = from._sprite.getRotation() / 180 * M_PI;
     _impulse = sf::Vector2f(std::cos(angle),std::sin(angle)) * 500.f;
     setPosition(from.getPosition());
@@ -30,7 +30,7 @@ bool ShootPlayer::isCollide(const Entity& other)const {
 // ShootSaucer //
 
 ShootSaucer::ShootSaucer(Saucer& from) : Shoot(Configuration::Textures::ShootSaucer, from._world) {
-    _duration = sf::seconds(5);
+    _duration = sf::seconds(3);
     sf::Vector2f pos = Configuration::player->getPosition() - from.getPosition();
     float accuracy_lost = random(-1.f,1.f)*M_PI/((200+Configuration::getScore())/100.f);
     float angle_rad = std::atan2(pos.y,pos.x) + accuracy_lost;

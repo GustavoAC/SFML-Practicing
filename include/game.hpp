@@ -19,12 +19,16 @@ class Game {
     Game(int x=800, int y=600);
     void run(int minimum_frame_per_seconds);
 
+    void initLevel();
+    
   private:
     void processEvents();
     void update(sf::Time deltaTime);
     void render();
     sf::RenderWindow _window;
     World _world;
+
+    sf::Time _nextSaucer;
 };
 
 #endif

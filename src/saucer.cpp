@@ -58,12 +58,11 @@ void Saucer::onDestroy() {
 
 void Saucer::newSaucer(World& world) {
     Saucer* res = nullptr;
-    if(random(0.f,1.f) > Configuration::getScore()/40000.f)
+    if(random(0.f,1.f) > Configuration::getScore()/20000.f)
         res = new BigSaucer(world);
     else
         res = new SmallSaucer(world);
 
-    //What's going on with these random functions? Fix them.
-    res->setPosition(random(0,1)*world.getX(), random(0.f,(float)world.getY()));
+    res->setPosition(0, random(0.f,(float)world.getY()));
     world.add(res);
 }

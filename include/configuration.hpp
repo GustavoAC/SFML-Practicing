@@ -16,9 +16,14 @@ class Configuration {
     Configuration& operator=(const Configuration&) = delete;
 
     static Player* player;
+    static int _lives;
+
+    static void initialize();
+    static void draw(sf::RenderTarget& target);
 
     static int getScore();
     static void addScore(int s);
+    static bool isGameOver();
 
     enum Textures : int {PlayerTex,
                         PlayerLife,
@@ -35,8 +40,7 @@ class Configuration {
                         SmallMeteor3,
                         SmallMeteor4,
                         ShootPlayer,
-                        ShootSaucer,
-                        };
+                        ShootSaucer};
     static ResourceManager<sf::Texture, int> textures;
 
     enum Sounds : int {LaserPlayer,
@@ -48,19 +52,27 @@ class Configuration {
                     Explosion1,
                     Explosion2,
                     Explosion3,
-                    Jump,
-                    };
-    static ResourceManager<sf::SoundBuffer,int> sounds;
+                    Jump};
+    static ResourceManager<sf::SoundBuffer, int> sounds;
 
-    enum PlayerInputs : int {Up,Left,Right,Down,Shoot,Hyperspace};
+    enum Fonts : int {Gui};
+    static ResourceManager<sf::Font, int> fonts;
+
+    enum PlayerInputs : int {Up,
+                            Left,
+                            Right,
+                            Down,
+                            Shoot,
+                            Hyperspace};
     static ActionMap<int> player_inputs;
-
-    static void initialize();
 
   private:
     static int _score;
+    static sf::Text   _txt_score;
+    static sf::Sprite _spr_life;
 
     static void initTextures();
+    static void initFonts();
     static void initSounds();
     static void initPlayerInputs();
 };

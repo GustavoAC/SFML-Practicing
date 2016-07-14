@@ -2,16 +2,28 @@
 #include "random.hpp"
 
 // Instancia os statics
-ResourceManager<sf::Texture,int> Configuration::textures;
-ResourceManager<sf::SoundBuffer,int> Configuration::sounds;
+ResourceManager<sf::Texture, int> Configuration::textures;
+ResourceManager<sf::SoundBuffer, int> Configuration::sounds;
+ResourceManager<sf::Font, int> Configuration::fonts;
 ActionMap<int> Configuration::player_inputs;
+
 Player* Configuration::player = nullptr;
 int Configuration::_score;
+int Configuration::_lives = 3;
+sf::Text   Configuration::_txt_score;
+sf::Sprite Configuration::_spr_life;
 
 void Configuration::initialize() {
     initTextures();
+    initFonts();
     initSounds();
     initPlayerInputs();
+
+    _txt_score.setFont(fonts.get(Fonts::Gui));
+    _txt_score.setCharacterSize(24);
+    _txt_score.setString("Score: 0");
+
+    _spr_life.setTexture(textures.get(Textures::PlayerLife));
 }
 
 void Configuration::initTextures(){
@@ -39,7 +51,11 @@ void Configuration::initTextures(){
     textures.load(Textures::ShootSaucer,"media/Shoot/Saucer.png");
 }
 
-void Configuration::initSounds(){
+void Configuration::initFonts() {
+    fonts.load(Fonts::Gui, "media/font/OpenSans.ttf");
+}
+
+void Configuration::initSounds() {
     //laser
     sounds.load(Sounds::LaserPlayer,"media/sounds/laser1.ogg");
     sounds.load(Sounds::LaserEnemy,"media/sounds/laser2.ogg");
@@ -66,10 +82,23 @@ void Configuration::initPlayerInputs() {
     player_inputs.map(PlayerInputs::Hyperspace, Action(sf::Keyboard::X));
 }
 
+bool Configuration::isGameOver(){
+    return (_lives < 0);
+}
+
 int Configuration::getScore(){
     return Configuration::_score;
 }
 
 void Configuration::addScore(int s){
     Configuration::_score += s;
+    _txt_score.setString("Score: " + std::to_string(_score));
+}
+
+void Configuration::draw(sf::RenderTarget& target) {
+    target.draw(_txt_score);
+    for(int i = 0;i < _lives;++i) {
+        _spr_life.setPosition(40*i, 40);
+        target.draw(_spr_life);
+    }
 }

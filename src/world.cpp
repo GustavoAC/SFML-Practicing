@@ -54,10 +54,10 @@ const std::list<Entity*> World::getEntities() const {
 }
 
 void World::update(sf::Time deltaTime) {
-    if(_entities_tmp.size() > 0)
+    if (_entities_tmp.size() > 0)
         _entities.merge(_entities_tmp);
 
-    for(Entity* entity_ptr : _entities) {
+    for (Entity* entity_ptr : _entities) {
         Entity& entity = *entity_ptr;
         entity.update(deltaTime);
         sf::Vector2f pos = entity.getPosition();
@@ -78,11 +78,11 @@ void World::update(sf::Time deltaTime) {
     }
 
     const auto end = _entities.end();
-    for(auto it_i = _entities.begin(); it_i != end; ++it_i) {
+    for (auto it_i = _entities.begin(); it_i != end; ++it_i) {
         Entity& entity_i = **it_i;
         auto it_j = it_i;
         it_j++;
-        for(/* Empty */; it_j != end; ++it_j) {
+        for (/* Empty */; it_j != end; ++it_j) {
             Entity& entity_j = **it_j;
             if(entity_i.isAlive() and entity_i.isCollide(entity_j))
                 entity_i.onDestroy();
@@ -91,8 +91,8 @@ void World::update(sf::Time deltaTime) {
         }
     }
 
-    for(auto it = _entities.begin(); it != _entities.end(); /* Empty */) {
-        if(not (*it)->isAlive()) {
+    for (auto it = _entities.begin(); it != _entities.end(); /* Empty */) {
+        if (not (*it)->isAlive()) {
             delete *it;
             it = _entities.erase(it);
         }
@@ -106,6 +106,6 @@ void World::update(sf::Time deltaTime) {
 }
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for(Entity* entity : _entities)
-    target.draw(*entity,states);
+    for (Entity* entity : _entities)
+        target.draw(*entity,states);
 }
