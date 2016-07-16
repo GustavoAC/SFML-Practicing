@@ -12,12 +12,14 @@ void World::add(Entity* entity) {
 }
 
 void World::clear() {
-    for(Entity* entity :_entities)
+    for(Entity* entity :_entities){
         delete entity;
+    }
     _entities.clear();
 
-    for(Entity* entity :_entities_tmp)
+    for(Entity* entity :_entities_tmp){
         delete entity;
+    }
     _entities_tmp.clear();
 
     _sounds.clear();

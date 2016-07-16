@@ -83,7 +83,7 @@ void Configuration::initPlayerInputs() {
 }
 
 bool Configuration::isGameOver(){
-    return (_lives < 0);
+    return (_lives <= 0);
 }
 
 int Configuration::getScore(){

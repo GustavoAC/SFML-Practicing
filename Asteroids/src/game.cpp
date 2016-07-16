@@ -39,15 +39,13 @@ void Game::run(int minimum_frame_per_seconds) {
             timeSinceLastUpdate -= TimePerFrame;
             update(TimePerFrame);
         }
-
         update(timeSinceLastUpdate);
+
         render();
     }
 }
 
 void Game::processEvents() {
-    if(Configuration::isGameOver())
-        _window.close();
 
     sf::Event event;
     while(_window.pollEvent(event)) {
@@ -67,23 +65,28 @@ void Game::processEvents() {
 }
 
 void Game::update(sf::Time deltaTime) {
+
     _world.update(deltaTime);
 
-    if (Configuration::player == nullptr){
-        Configuration::player = new Player(_world);
-        Configuration::player->setPosition(_world.getX()/2,_world.getY()/2);
-        _world.add(Configuration::player);
-    }
+    if (Configuration::isGameOver()) {
+        _window.close();
+    } else {
+        if (Configuration::player == nullptr){
+            Configuration::player = new Player(_world);
+            Configuration::player->setPosition(_world.getX()/2,_world.getY()/2);
+            _world.add(Configuration::player);
+        }
 
-    _nextSaucer -= deltaTime;
+        _nextSaucer -= deltaTime;
 
-    if (_nextSaucer < sf::Time::Zero) {
-        Saucer::newSaucer(_world);
-        _nextSaucer = sf::seconds(random(10.f,30.f));
-    }
+        if (_nextSaucer < sf::Time::Zero) {
+            Saucer::newSaucer(_world);
+            _nextSaucer = sf::seconds(random(10.f,30.f));
+        }
 
-    if (_world.size() <= 1) {
-        initLevel();
+        if (_world.size() <= 1) {
+            initLevel();
+        }
     }
 }
 
